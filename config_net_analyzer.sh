@@ -6,7 +6,19 @@ check_interface_exists() {
        exit 1
    fi
 }
-# Delete every existing bridges dissociate the interfaces
+disable_promiscuous_mode() {
+   for interface in "$@"; do
+       # Check if the interface exists
+       if ip link show "$interface" > /dev/null 2>&1; then
+           # Disable promiscuous mode
+           sudo ip link set "$interface" promisc off
+           echo "Promiscuous mode is disabled on $interface."
+       else
+           echo "$interface does not exist."
+       fi
+   done
+}
+# Delete every existing bridge and dissociate the interfaces
 echo "# Deletion of every existing bridges..."
 for bridge in $(brctl show | awk 'NR>1 {print $1}' | sort -u); do
    echo "# Deletion of $bridge and dissociation of the interfaces..."
@@ -20,7 +32,7 @@ for bridge in $(brctl show | awk 'NR>1 {print $1}' | sort -u); do
    ip link set "$bridge" down
    brctl delbr "$bridge"
 done
-echo "# Every bridges have been well deleted."
+echo "# Every bridge have been well deleted."
 # Verify the availability of the interfaces eth0, eth1 et eth2
 echo "# Verification of network interfaces..."
 check_interface_exists "eth0"
@@ -62,7 +74,9 @@ ip link set eth2 up
 ip link set br0 up
 # Set also eth0 in UP mode
 ip link set eth0 up
-# Activate the promiscuity mode only for eth0 to capture all the network trafic
+# Deactivate the promiscuity mode for eth1, eth2 and br0
+disable_promiscuous_mode eth1 eth2 br0
+# Activate the promiscuity mode only for eth0 to capture all the network traffic
 echo "# Activation of promiscuity mode on eth0 for network traffic..."
 ip link set eth0 promisc on
 # Finale confirmation and summary of the configurations
