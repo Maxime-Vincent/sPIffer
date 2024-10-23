@@ -17,7 +17,7 @@ check_lib_available(){
 # Set up Wifi for possible library to install
 echo "# Set up Wifi for possible library to install"
 sudo ip link set wlan0 up
-echo"###############################################"
+echo "###############################################"
 # Delete every existing bridge and dissociate the interfaces
 echo "# Deletion of every existing bridges..."
 for bridge in $(brctl show | awk 'NR>1 {print $1}' | sort -u); do
@@ -33,7 +33,7 @@ for bridge in $(brctl show | awk 'NR>1 {print $1}' | sort -u); do
    brctl delbr "$bridge"
 done
 echo "# Every bridge have been well deleted."
-echo"###############################################"
+echo "###############################################"
 # Verify the availability of the interfaces eth0, eth1 et eth2
 echo "# Verification of network interfaces..."
 check_interface_exists "eth0"
@@ -50,7 +50,7 @@ if ! grep -q "net.ipv4.ip_forward=1" /etc/sysctl.conf; then
 else
    echo "# Forwarding IP is already configured in /etc/sysctl.conf."
 fi
-echo"###############################################"
+echo "###############################################"
 #Install iptables
 echo "# Verification and installation of iptables if needed..."
 check_lib_available iptables
@@ -62,7 +62,7 @@ iptables -t nat -F
 echo "# Configuration of forwarding between eth1 and eth2..."
 iptables -A FORWARD -i eth1 -o eth2 -j ACCEPT
 iptables -A FORWARD -i eth2 -o eth1 -j ACCEPT
-echo"###############################################"
+echo "###############################################"
 # Install bridge-utils if needed (useful for the bridge management)
 echo "# Verification and installation of bridge-utils if needed..."
 check_lib_available bridge-utils
@@ -95,7 +95,7 @@ sudo ip addr flush dev eth2
 # Activate the promiscuity mode only for eth0 to capture all the network traffic
 echo "# Activation of promiscuity mode on eth0 for network traffic..."
 ip link set eth0 promisc on
-echo"###############################################"
+echo "###############################################"
 # Finale confirmation and summary of the configurations
 echo "# Configuration finished successfully !"
 echo "# Summary of perform actions :"
@@ -104,7 +104,7 @@ echo "#  - Forwarding activation on eth1 and eth2."
 echo "#  - The interface eth0 is configured in promiscuity mode to capture the network traffic."
 echo "#  - You can now use Wireshark on eth0 to sniff all the network traffic between eth1 and eth2."
 
-echo"###############################################"
+echo "###############################################"
 # Stop and disable Wifi to avoid some external process
 echo "# Set wlan0 to DOWN mode"
 sudo ip link set wlan0 down
