@@ -13,8 +13,8 @@ check_lib_available(){
     if dpkg -l | grep -qw "$1"; then
         echo "# $1 is already installed."
     else
-        echo "# $1 not installed. Launch installation..."
-        apt-get install -y "$1"
+        echo "# $1 not installed. Exit the configuration..."
+        exit 1
     fi
 }
 
@@ -120,9 +120,6 @@ sudo tc filter add dev br0 parent ffff: protocol all u32 match u8 0 0 action mir
 sudo tc qdisc add dev br0 handle 1: root prio
 sudo tc filter add dev br0 parent 1: protocol all u32 match u8 0 0 action mirred egress mirror dev eth0
 
-# Disable IP address on eth0 to make it invisible on the network
-sudo ip addr flush dev eth0
-
 # Final confirmation and summary of the configurations
 echo "# Configuration finished successfully!"
 echo "# Summary of performed actions:"
@@ -135,3 +132,6 @@ echo "#  - You can now connect to eth0 with your PC and use Wireshark to sniff a
 
 # Stop and disable Wifi to avoid some external process
 sudo ip link set wlan0 down
+
+# Disable IP address on eth0 to make it invisible on the network
+sudo ip addr flush dev eth0
