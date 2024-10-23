@@ -6,6 +6,7 @@ check_interface_exists() {
        exit 1
    fi
 }
+# Check the library are available
 check_lib_available(){
     if dpkg -l | grep -qw "$1"; then
         echo "# $1 is already installed."
@@ -13,6 +14,18 @@ check_lib_available(){
         echo "# $1 not installed. Launch installation..."
         apt-get install $1
     fi
+}
+# Function to add iptables rules if they do not already exist
+add_iptables_rule() {
+   local rule="$1"
+   # Check if the rule already exists
+   if ! iptables $rule 2>/dev/null; then
+       # Add the rule if it doesn't exist
+       iptables $rule
+       echo "Added iptables rule: $rule"
+   else
+       echo "Iptables rule already exists: $rule"
+   fi
 }
 # Set up Wifi for possible library to install
 echo "# Set up Wifi for possible library to install"
@@ -54,14 +67,10 @@ echo "----------------------------------------------------"
 #Install iptables
 echo "# Verification and installation of iptables if needed..."
 check_lib_available iptables
-# Empty the iptables existing rules to start from scratch
-echo "# Reinitialisation of iptables rules..."
-iptables -F
-iptables -t nat -F
 # Add the rules for forwarding between eth1 and eth2
 echo "# Configuration of forwarding between eth1 and eth2..."
-iptables -A FORWARD -i eth1 -o eth2 -j ACCEPT
-iptables -A FORWARD -i eth2 -o eth1 -j ACCEPT
+add_iptables_rule "-A FORWARD -i eth1 -o eth2 -j ACCEPT"
+add_iptables_rule "-A FORWARD -i eth2 -o eth1 -j ACCEPT"
 echo "----------------------------------------------------"
 # Install bridge-utils if needed (useful for the bridge management)
 echo "# Verification and installation of bridge-utils if needed..."
@@ -94,16 +103,15 @@ sudo ip addr flush dev eth1
 sudo ip addr flush dev eth2
 # Activate the promiscuity mode only for eth0 to capture all the network traffic
 echo "# Activation of promiscuity mode on eth0 for network traffic..."
-ip link set eth0 promisc on
+ip link set eth0 promisc off
 echo "----------------------------------------------------"
 # Finale confirmation and summary of the configurations
 echo "# Configuration finished successfully !"
 echo "# Summary of perform actions :"
 echo "#  - Deletion of the older existing bridge."
 echo "#  - Forwarding activation on eth1 and eth2."
-echo "#  - The interface eth0 is configured in promiscuity mode to capture the network traffic."
-echo "#  - You can now use Wireshark on eth0 to sniff all the network traffic between eth1 and eth2."
-
+echo "#  - The interface eth0 is configured without promiscuity mode to capture the network traffic."
+echo "#  - You can now use Wireshark on br0 to sniff all the network traffic between eth1 and eth2."
 echo "----------------------------------------------------"
 # Stop and disable Wifi to avoid some external process
 echo "# Set wlan0 to DOWN mode"
