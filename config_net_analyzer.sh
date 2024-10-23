@@ -22,9 +22,9 @@ add_iptables_rule() {
    if ! iptables $rule 2>/dev/null; then
        # Add the rule if it doesn't exist
        iptables $rule
-       echo "Added iptables rule: $rule"
+       echo "# Added iptables rule: $rule"
    else
-       echo "Iptables rule already exists: $rule"
+       echo "# Iptables rule already exists: $rule"
    fi
 }
 # Set up Wifi for possible library to install
