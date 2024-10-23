@@ -6,23 +6,11 @@ check_interface_exists() {
        exit 1
    fi
 }
-disable_promiscuous_mode() {
-   for interface in "$@"; do
-       # Check if the interface exists
-       if ip link show "$interface" > /dev/null 2>&1; then
-           # Disable promiscuous mode
-           sudo ip link set "$interface" promisc off
-           echo "Promiscuous mode is disabled on $interface."
-       else
-           echo "$interface does not exist."
-       fi
-   done
-}
 check_lib_available(){
     if dpkg -l | grep -qw "$1"; then
-        echo "$1 is already installed."
+        echo "# $1 is already installed."
     else
-        echo "$1 not installed. Launch installation..."
+        echo "# $1 not installed. Launch installation..."
         apt-get install $1
     fi
 }
@@ -59,9 +47,6 @@ if ! grep -q "net.ipv4.ip_forward=1" /etc/sysctl.conf; then
 else
    echo "# Forwarding IP is already configured in /etc/sysctl.conf."
 fi
-# Uninstall nftables and its dependencies
-sudo apt-get remove --auto-remove nftables
-apt-get purge nftables
 #Install iptables
 echo "# Verification and installation of iptables if needed..."
 check_lib_available iptables
@@ -94,11 +79,16 @@ ip link set eth2 up
 ip link set br0 up
 # Set also eth0 in UP mode
 ip link set eth0 up
-# Deactivate the promiscuity mode for eth1, eth2 and br0
-disable_promiscuous_mode eth1 eth2 br0
+# Deactivate the promiscuity mode for eth1, eth2
+ip link set eth1 promisc off
+ip link set eth2 promisc off
+# Remove the use of IP address on ETH sniffed 
+sudo ip addr flush dev eth1
+sudo ip addr flush dev eth2
 # Activate the promiscuity mode only for eth0 to capture all the network traffic
 echo "# Activation of promiscuity mode on eth0 for network traffic..."
 ip link set eth0 promisc on
+ip link set br0 promisc on
 # Finale confirmation and summary of the configurations
 echo "# Configuration finished successfully !"
 echo "# Summary of perform actions :"
@@ -108,4 +98,4 @@ echo "#  - The interface eth0 is configured in promiscuity mode to capture the n
 echo "#  - You can now use Wireshark on eth0 to sniff all the network traffic between eth1 and eth2."
 
 # Stop and disable Wifi to avoid some external process
-sudo ip link set wlan0 down 
+sudo ip link set wlan0 down
