@@ -79,9 +79,9 @@ ip link set eth2 up
 ip link set br0 up
 # Set also eth0 in UP mode
 ip link set eth0 up
-# Deactivate the promiscuity mode for eth1, eth2
-ip link set eth1 promisc off
-ip link set eth2 promisc off
+# Activate the promiscuity mode for eth1, eth2
+ip link set eth1 promisc on
+ip link set eth2 promisc on
 # Remove the use of IP address on ETH sniffed 
 sudo ip addr flush dev eth1
 sudo ip addr flush dev eth2
