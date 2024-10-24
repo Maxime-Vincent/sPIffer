@@ -116,3 +116,7 @@ echo "----------------------------------------------------"
 # Stop and disable Wifi to avoid some external process
 echo "# Set wlan0 to DOWN mode"
 sudo ip link set wlan0 down
+# Verify the status of the bridge and the forwarding
+echo "# Verify the forwarding btw eth1 and eth2"
+sudo brctl showstp br0
+echo "----------------------------------------------------"
