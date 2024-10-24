@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Get the actual path of this script bash
+SCRIPT_PATH="$(realpath "$BASH_SOURCE")"
+
 # Check if the interface already exists
 check_interface_exists() {
    if ! ip link show "$1" &> /dev/null; then
