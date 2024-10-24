@@ -59,7 +59,7 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 # Keep the forwarding persistant inside system file /etc/sysctl.conf
 if ! grep -q "net.ipv4.ip_forward=1" /etc/sysctl.conf; then
    echo "# Add the configuration of the forwarding IP in /etc/sysctl.conf..."
-   echo "# net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+   echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
 else
    echo "# Forwarding IP is already configured in /etc/sysctl.conf."
 fi
@@ -98,7 +98,7 @@ ip link set eth0 up
 ip link set eth1 promisc on
 ip link set eth2 promisc on
 ip link set br0 promisc on
-# Remove the use of IP address on ETH sniffed 
+# Remove the use of IP address on ETH sniffed
 sudo ip addr flush dev eth1
 sudo ip addr flush dev eth2
 # Activate the promiscuity mode only for eth0 to capture all the network traffic
