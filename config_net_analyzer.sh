@@ -105,6 +105,10 @@ sudo ip addr flush dev eth2
 echo "# Activation of promiscuity mode on eth0 for network traffic..."
 ip link set eth0 promisc off
 echo "----------------------------------------------------"
+# Verify the status of the bridge and the forwarding
+echo "# Verify the forwarding btw eth1 and eth2"
+sudo brctl showstp br0
+echo "----------------------------------------------------"
 # Finale confirmation and summary of the configurations
 echo "# Configuration finished successfully !"
 echo "# Summary of perform actions :"
@@ -116,7 +120,4 @@ echo "----------------------------------------------------"
 # Stop and disable Wifi to avoid some external process
 echo "# Set wlan0 to DOWN mode"
 sudo ip link set wlan0 down
-# Verify the status of the bridge and the forwarding
-echo "# Verify the forwarding btw eth1 and eth2"
-sudo brctl showstp br0
 echo "----------------------------------------------------"
