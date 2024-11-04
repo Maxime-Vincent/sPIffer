@@ -96,9 +96,6 @@ ip link set eth2 up
 ip link set br0 up
 # Set also eth0 in UP mode
 ip link set eth0 up
-# Activate the promiscuity mode only for eth0 to capture all the network traffic
-echo "# Deactivation of promiscuity mode on eth0 to not disturb network traffic..."
-ip link set eth0 promisc off
 # Activate the promiscuity mode for eth1, eth2
 ip link set eth1 promisc on
 ip link set eth2 promisc on
@@ -106,6 +103,9 @@ ip link set br0 promisc on
 # Remove the use of IP address on ETH sniffed
 sudo ip addr flush dev eth1
 sudo ip addr flush dev eth2
+# Activate the promiscuity mode only for eth0 to capture all the network traffic
+echo "# Deactivation of promiscuity mode on eth0 to not disturb network traffic..."
+ip link set eth0 promisc off
 echo "----------------------------------------------------"
 # Verify the status of the bridge and the forwarding
 echo "# Verify the forwarding btw eth1 and eth2"
