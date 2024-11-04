@@ -3,13 +3,6 @@
 # Get the actual path of this script bash
 SCRIPT_PATH="$(realpath "$BASH_SOURCE")"
 
-# Check if the interface already exists
-check_interface_exists() {
-   if ! ip link show "$1" &> /dev/null; then
-       echo "# Error : The interface $1 is not available."
-       exit 1
-   fi
-}
 # Check the library are available
 check_lib_available(){
     if dpkg -l | grep -qw "$1"; then
@@ -35,6 +28,17 @@ add_iptables_rule() {
 echo "# Set up Wifi for possible library to install"
 sudo ip link set wlan0 up
 echo "----------------------------------------------------"
+# Verify the availability of the interfaces eth0, eth1, and eth2
+echo "# Verifying network interfaces..."
+for interface in eth0 eth1 eth2; do
+   until ip link show "$interface" &> /dev/null; do
+       echo "# Waiting for interface $interface to be available..."
+       sleep 2
+   done
+   echo "# Interface $interface is available."
+done
+echo "# Interfaces eth0, eth1, and eth2 are available."
+echo "----------------------------------------------------"
 # Delete every existing bridge and dissociate the interfaces
 echo "# Deletion of every existing bridges..."
 for bridge in $(brctl show | awk 'NR>1 {print $1}' | sort -u); do
@@ -51,12 +55,6 @@ for bridge in $(brctl show | awk 'NR>1 {print $1}' | sort -u); do
 done
 echo "# Every bridge have been well deleted."
 echo "----------------------------------------------------"
-# Verify the availability of the interfaces eth0, eth1 et eth2
-echo "# Verification of network interfaces..."
-check_interface_exists "eth0"
-check_interface_exists "eth1"
-check_interface_exists "eth2"
-echo "# Interfaces eth0, eth1 et eth2 are available."
 # Activate the forwarding IP at kernel level
 echo "# Activation of forwarding IP..."
 echo 1 > /proc/sys/net/ipv4/ip_forward
@@ -98,6 +96,9 @@ ip link set eth2 up
 ip link set br0 up
 # Set also eth0 in UP mode
 ip link set eth0 up
+# Activate the promiscuity mode only for eth0 to capture all the network traffic
+echo "# Deactivation of promiscuity mode on eth0 to not disturb network traffic..."
+ip link set eth0 promisc off
 # Activate the promiscuity mode for eth1, eth2
 ip link set eth1 promisc on
 ip link set eth2 promisc on
@@ -105,9 +106,6 @@ ip link set br0 promisc on
 # Remove the use of IP address on ETH sniffed
 sudo ip addr flush dev eth1
 sudo ip addr flush dev eth2
-# Activate the promiscuity mode only for eth0 to capture all the network traffic
-echo "# Activation of promiscuity mode on eth0 for network traffic..."
-ip link set eth0 promisc off
 echo "----------------------------------------------------"
 # Verify the status of the bridge and the forwarding
 echo "# Verify the forwarding btw eth1 and eth2"
