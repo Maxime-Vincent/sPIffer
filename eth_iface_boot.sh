@@ -13,19 +13,21 @@ fi
 
 # Create the systemd service file
 echo "[Unit]
-Description=My Startup Script
-After=network.target
+Description=sPIffer conf at boot
+Wants=network-pre.target
+After=network-pre.target
+Before=network.target
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=$SCRIPT_PATH
-Restart=on-failure
+RemainAfterExit=true
 
 [Install]
 WantedBy=multi-user.target" | sudo tee "$SERVICE_FILE" > /dev/null
 
 # Set the correct permissions for the service file
-sudo chmod 644 "$SERVICE_FILE"
+sudo chmod 666 "$SERVICE_FILE"
 
 # Reload systemd to apply changes
 sudo systemctl daemon-reload
@@ -35,11 +37,5 @@ sudo systemctl enable "$SERVICE_NAME.service"
 
 echo "Service $SERVICE_NAME has been created and enabled to start at boot."
 
-# Optional: Start the service immediately
-read -p "Do you want to start the service now? (y/n): " start_now
-if [[ "$start_now" =~ ^[Yy]$ ]]; then
-  sudo systemctl start "$SERVICE_NAME.service"
-  echo "Service $SERVICE_NAME started."
-else
-  echo "Service $SERVICE_NAME will start at the next boot."
-fi
+sudo systemctl start "$SERVICE_NAME.service"
+echo "Service $SERVICE_NAME started."

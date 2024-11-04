@@ -106,7 +106,7 @@ ip link set br0 promisc on
 sudo ip addr flush dev eth1
 sudo ip addr flush dev eth2
 # Activate the promiscuity mode only for eth0 to capture all the network traffic
-echo "# Activation of promiscuity mode on eth0 for network traffic..."
+echo "# Deactivation of promiscuity mode on eth0 for network traffic..."
 ip link set eth0 promisc off
 echo "----------------------------------------------------"
 # Verify the status of the bridge and the forwarding
