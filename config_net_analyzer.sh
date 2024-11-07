@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Get the actual path of this script bash
 SCRIPT_PATH="$(realpath "$BASH_SOURCE")"
