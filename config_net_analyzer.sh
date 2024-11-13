@@ -30,12 +30,12 @@ for bridge in $(brctl show | awk 'NR>1 {print $1}' | sort -u); do
    # Dissociate the interfaces with the bridge
    for iface in $(brctl show $bridge | awk 'NR>1 {print $4}'); do
        echo "# Deletion of the interface $iface of bridge $bridge..."
-       ip link set "$iface" down
-       brctl delif "$bridge" "$iface"
+       sudo ip link set "$iface" down
+       sudo brctl delif "$bridge" "$iface"
    done
    # Supprimer le bridge lui-même
-   ip link set "$bridge" down
-   brctl delbr "$bridge"
+   sudo ip link set "$bridge" down
+   sudo brctl delbr "$bridge"
 done
 echo "# Every bridge have been well deleted."
 echo "----------------------------------------------------"
@@ -102,4 +102,8 @@ echo "#  - Deletion of the older existing bridge."
 echo "#  - Forwarding activation on eth1 and eth2."
 echo "#  - The interface eth0 is configured without promiscuity mode to capture the network traffic."
 echo "#  - You can now use Wireshark on br0 to sniff all the network traffic between eth1 and eth2."
+echo "----------------------------------------------------"
+echo "# Launch of webserver"
+cd /home/sPIffer
+sudo nohup npm start > /dev/null 2>&1 &
 echo "----------------------------------------------------"
