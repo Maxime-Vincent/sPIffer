@@ -9,6 +9,7 @@
 > - npm: ```sudo apt-get install npm```
 > - pkg: ```sudo npm install dpkg```
 > - libpam0g-dev: ```sudo apt-get install libpam0g-dev```
+> - debhelper: ```sudo apt-get install debhelper```
 
 ## Script Description
 This package configures network forwarding on a Raspberry Pi by setting up a bridge (br0) between two added Ethernet interfaces (eth1 and eth2). It also enables traffic capture beyond the bridge (br0) which is in promiscuous mode.
