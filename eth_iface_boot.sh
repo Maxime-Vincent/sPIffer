@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Variables
 SCRIPT_PATH="/home/sPIffer/config_net_analyzer.sh"
