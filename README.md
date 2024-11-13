@@ -20,3 +20,25 @@ This package configures network forwarding on a Raspberry Pi by setting up a bri
 5. It launches a web server that allows the user to start capturing and downloading network traffic.
 ## Use Case
 This setup is ideal for scenarios where network traffic analysis is needed, such as monitoring for performance, security, or debugging purposes. By capturing traffic in real-time, users can gain insights into data flow and network behavior.
+
+## Manual installation
+
+### Create certificate with openssl
+
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt
+
+### Launch Server
+
+    sudo node server.js
+
+or
+
+    sudo npm start
+
+### Create package sPIffer
+
+    sudo dpkg-deb --build sPIffer/
+
+### Install package sPIffer
+
+    sudo dpkg -i sPIffer.deb

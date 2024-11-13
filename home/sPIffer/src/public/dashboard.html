@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <link rel="stylesheet" href="dashboard.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sPIffer - Dashboard</title>
+</head>
+
+<body>
+    <button id="logout" type="button">
+        <span class='gg-log-out'></span>
+    </button>
+    <div class="tab">
+        <button id="CaptureTab" class="tab-link active" data-tab="capture">Capture</button>
+        <button id="BrowseFilesTab" class="tab-link" data-tab="browse">Browse Files</button>
+    </div>
+    <!-- Dynamic Card -->
+    <div class="card">
+        <!-- Capture Tab content -->
+        <div id="capture-content" class="tab-content">
+            <h2>Network Capture</h2>
+            <div class="file-input-group">
+                <!-- Capture Filename -->
+                <div class="input-container">
+                    <label for="filename">Filename</label>
+                    <input type="text" id="filename" name="filename" placeholder="Enter filename...">
+                </div>
+                <!-- Capture Format -->
+                <div class="select-container">
+                    <label for="format">Format</label>
+                    <select id="format" name="format">
+                        <option value="pcapng">.pcapng</option>
+                        <option value="pcap">.pcap</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Capture Configuration -->
+            <div class="checkbox-group">
+                <!-- Capture Delay -->
+                <div class="checkbox-item">
+                    <label>Delay</label>
+                    <input type="number" placeholder="Time delay" name="time_delay" id="time_delay">
+                    <select id="delay_format" name="delay_format">
+                        <option value="seconds">seconds</option>
+                        <option value="minutes">minutes</option>
+                    </select>
+                </div>
+            </div>
+            <button id="submit-btn" type="button">Launch Capture</button>
+        </div>
+        <!-- Hidden by default -->
+        <div id="browse-content" class="tab-content">
+            <h2>Browse Files</h2>
+            <div id="folder">
+                
+            </div>
+        </div>
+    </div>
+    <p id="output"></p>
+    <footer>
+        <p>© 2024 sPIffer - All right reserved.</p>
+    </footer>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

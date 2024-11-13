@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+
+PKG_PATH="/home/sPIffer"
+SCRIPT_PATH="/home/sPIffer/config_net_analyzer.sh"
+LAUNCHER_PATH="/home/sPIffer/eth_iface_boot.sh"
+
+sudo chown -R root:root $PKG_PATH
+sudo chmod -R 777 $PKG_PATH
+
+# Check if the script exists and run it
+if [ -f "$SCRIPT_PATH" ]; then
+    echo "# Launch BOOT script"
+    sudo .$LAUNCHER_PATH
+    sudo .$SCRIPT_PATH
+    echo "# sPIffer well installed."
+else
+    echo "# The script $SCRIPT_PATH was not found."
+fi
+
+exit 0

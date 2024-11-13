@@ -1,0 +1,21 @@
+{
+  "name": "spiffer_website",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "bin": "src/server.js",
+  "scripts": {
+    "start": "sudo node src/server.js"
+  },
+  "keywords": [],
+  "author": "Zephyr",
+  "license": "MIT",
+  "description": "Men-in-the-Middle, Net Analyzer",
+  "dependencies": {
+    "authenticate-pam": "^1.0.5",
+    "body-parser": "^1.20.3",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "helmet": "^8.0.0"
+  }
+}
