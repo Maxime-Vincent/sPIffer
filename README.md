@@ -7,7 +7,7 @@
 > - bridge-utils: ```sudo apt-get install bridge-utils```
 > - nodejs: ```sudo apt-get install nodejs```
 > - npm: ```sudo apt-get install npm```
-> - pkg: ```sudo npm install pkg```
+> - pkg: ```sudo npm install dpkg```
 > - libpam0g-dev: ```sudo apt-get install libpam0g-dev```
 
 ## Script Description
