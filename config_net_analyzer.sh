@@ -23,6 +23,10 @@ add_iptables_rule() {
    fi
 }
 echo "----------------------------------------------------"
+# Stop and disable Wifi to avoid some external process
+echo "# Set wlan0 to DOWN mode"
+sudo ip link set wlan0 down
+echo "----------------------------------------------------"
 # Delete every existing bridge and dissociate the interfaces
 echo "# Deletion of every existing bridges..."
 for bridge in $(brctl show | awk 'NR>1 {print $1}' | sort -u); do
