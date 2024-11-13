@@ -1,7 +1,7 @@
 # sPIffer
 
 > [!NOTE]
-> Some dependencies are needed if you choose not to install it using the package .deb:  
+> Some dependencies are needed if you choose not to install it using the ```requirements.sh```:  
 > - tshark: ```sudo apt-get install tshark```  
 > - iptables:  ```sudo apt-get install iptables```  
 > - bridge-utils: ```sudo apt-get install bridge-utils```
