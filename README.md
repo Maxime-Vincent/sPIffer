@@ -35,11 +35,3 @@ This setup is ideal for scenarios where network traffic analysis is needed, such
 or
 
     sudo npm start
-
-### Create package sPIffer
-
-    sudo dpkg-deb --build sPIffer/
-
-### Install package sPIffer
-
-    sudo dpkg -i sPIffer.deb
