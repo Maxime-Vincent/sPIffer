@@ -5,9 +5,9 @@
 > - tshark: ```sudo apt-get install tshark```  
 > - iptables:  ```sudo apt-get install iptables```  
 > - bridge-utils: ```sudo apt-get install bridge-utils```
-> - nodejs: ```sudo apt-get install -g nodejs```
-> - npm: ```sudo apt-get install -g npm```
-> - pkg: ```sudo npm install -g pkg```
+> - nodejs: ```sudo apt-get install nodejs```
+> - npm: ```sudo apt-get install npm```
+> - pkg: ```sudo npm install pkg```
 > - libpam0g-dev: ```sudo apt-get install libpam0g-dev```
 
 ## Script Description
