@@ -27,7 +27,7 @@ RemainAfterExit=true
 WantedBy=multi-user.target" | sudo tee "$SERVICE_FILE" > /dev/null
 
 # Set the correct permissions for the service file
-sudo chmod 666 "$SERVICE_FILE"
+sudo chmod 777 "$SERVICE_FILE"
 
 # Reload systemd to apply changes
 sudo systemctl daemon-reload
