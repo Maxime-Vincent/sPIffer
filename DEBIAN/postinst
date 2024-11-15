@@ -3,12 +3,16 @@
 set -e
 
 PKG_PATH="/home/sPIffer"
+CERT_PATH="/home/sPIffer/src/certificate"
 SCRIPT_PATH="/home/sPIffer/config_net_analyzer.sh"
 LAUNCHER_PATH="/home/sPIffer/eth_iface_boot.sh"
 
 sudo chown -R root:root $PKG_PATH
 sudo chmod -R 777 $PKG_PATH
 
+# Recreate new certificate for webserver
+cd $CERT_PATH
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt -config openssl.cnf
 # Check if the script exists and run it
 if [ -f "$SCRIPT_PATH" ]; then
     echo "# Launch BOOT script"

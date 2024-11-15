@@ -34,7 +34,7 @@ This setup is ideal for scenarios where network traffic analysis is needed, such
 
 ### Create certificate with openssl
 
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt -config openssl.cnf
     sudo mv server.key /home/sPIffer/src/certificate
     sudo mv server.crt /home/sPIffer/src/certificate
 

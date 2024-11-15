@@ -63,7 +63,7 @@ app.use(session({
         secure: true, // for HTTPS
         httpOnly: true,
         sameSite: 'strict', // Unable request CSRF
-        maxAge: 3600000 // Session lifetime (1 hour)
+        maxAge: 600000 // Session lifetime (10 min)
     }
 }));
 

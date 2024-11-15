@@ -60,15 +60,20 @@ body {
 }
 
 .tab {
+  font-weight : bold;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   display: flex;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
   width: 500px;
-  padding: 10px;
-}
-.tab button {
+  padding: 10px 2rem 10px 2rem;
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.1);
+ }
+ 
+ .tab button {
   flex: 1;
   color: white;
   background-color: transparent;
@@ -76,12 +81,20 @@ body {
   border: none;
   border-radius: 8px;
   outline: none;
-  margin:5px;
-}
-.tab button.active {
+  margin: 10px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+ }
+
+ .tab button.active {
   background-color: white;
-  color:black;
-}
+  color: black;
+  transform: scale(1.05);
+ }
+ 
+ .tab button:hover {
+  transform: scale(1.1);
+ }
 
 #browse-content {
   display: none;
