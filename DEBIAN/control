@@ -5,5 +5,5 @@ Essential: no
 Priority: optional
 Maintainer: Zephyr - Maxime Vincent
 Description: Men-In-The-Middle, Net Analyzer
-Depends: debhelper, nodejs, npm, libpam0g-dev, tshark, iptables, bridge-utils
+Depends: nodejs, npm, libpam0g-dev, tshark, iptables, bridge-utils
 Package: spiffer

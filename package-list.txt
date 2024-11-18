@@ -1,6 +1,4 @@
 bridge-utils
-debhelper
-dpkg
 iptables
 libpam0g-dev
 nodejs

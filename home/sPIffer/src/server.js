@@ -214,7 +214,6 @@ app.post('/download_capture', (req, res) => {
             console.log("File is ready for transfer");
         });
         // Send the file
-        // Send the file
         const fileStream = fs.createReadStream(filePath);
         fileStream.pipe(res);
         fileStream.on("error", (err) => {
