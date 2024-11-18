@@ -214,16 +214,13 @@ app.post('/download_capture', (req, res) => {
             console.log("File is ready for transfer");
         });
         // Send the file
-        const filePath = path.join(UPLOAD_FOLDER, filecap);
-        if (fs.existsSync(filePath)) {
-            res.download(filePath, (err) => {
-                if (err) {
-                    console.error('Erreur de téléchargement:', err);
-                }
-            });
-        } else {
-            res.status(404).send("File not found.");
-        }
+        // Send the file
+        const fileStream = fs.createReadStream(filePath);
+        fileStream.pipe(res);
+        fileStream.on("error", (err) => {
+            console.error("Error for reading the file :", err);
+            res.status(500).send("Internal Server Error.");
+        });
     } else {
         res.status(404).send("File not found.");
     }
