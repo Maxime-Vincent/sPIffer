@@ -56,12 +56,12 @@ fi
 echo "----------------------------------------------------"
 # Network optimizations before bringing up interfaces
 echo "# Applying network optimizations..."
-sysctl -w net.core.rmem_max=26214400
-sysctl -w net.core.wmem_max=26214400
-sysctl -w net.core.netdev_max_backlog=5000
-sysctl -w net.ipv4.tcp_rmem="4096 87380 26214400"
-sysctl -w net.ipv4.tcp_wmem="4096 65536 26214400"
-sysctl -w net.ipv4.tcp_mem="50576 64768 98152"
+sysctl -w net.core.rmem_max=26214400 > /dev/null
+sysctl -w net.core.wmem_max=26214400 > /dev/null
+sysctl -w net.core.netdev_max_backlog=5000 > /dev/null
+sysctl -w net.ipv4.tcp_rmem="4096 87380 26214400" > /dev/null
+sysctl -w net.ipv4.tcp_wmem="4096 65536 26214400" > /dev/null
+sysctl -w net.ipv4.tcp_mem="50576 64768 98152" > /dev/null
 # Disable TCP offloading features safely
 echo "# Disabling offload features on eth1 and eth2."
 ethtool -K eth1 tso off gso off gro off lro off
