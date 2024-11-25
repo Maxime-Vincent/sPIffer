@@ -167,7 +167,7 @@ app.get('/dashboard', isAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-app.post('/browsefiles', (req, res) => {
+app.post('/browsefiles', isAuthenticated, (req, res) => {
     const command = `ls /home/sPIffer/tshark_capture`;
     exec(command, (error, stdout, stderr) => {
         if (error) {
@@ -187,7 +187,7 @@ app.post('/browsefiles', (req, res) => {
     });
 });
 
-app.post('/download_capture', (req, res) => {
+app.post('/download_capture', isAuthenticated, (req, res) => {
     const { filecap } = req.body;
     console.log(filecap);
     if (!filecap) {
@@ -282,7 +282,7 @@ app.post('/launch_capture', isAuthenticated, (req, res) => {
             }
             console.log("Execution finished.");
             captureInProgress = false;
-            res.json({ Info: 'Capture completed successfully' });
+            res.status(200).json({ Info: 'Capture completed successfully' });
         });
     }
 });
