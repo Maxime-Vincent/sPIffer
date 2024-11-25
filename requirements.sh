@@ -2,6 +2,7 @@
 
 set -e
 
+sudo apt-get update
 sudo apt-get install tshark
 sudo apt-get install iptables
 sudo apt-get install bridge-utils
