@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
 async function get_captures_file() {
   const outputElement = document.getElementById("output");
   outputElement.style.display = "none";
+  const nofile = document.getElementById("no_file");
+  nofile.style.display = "none";
   try {
     const response = await fetch('/browsefiles', {
       method: 'POST',
@@ -49,6 +51,7 @@ async function get_captures_file() {
     const files = Array.isArray(JSON.parse(result.Files)) ? JSON.parse(result.Files) : [];
     const fileList = document.getElementById("folder");
     fileList.innerHTML = "";
+    const hasFiles = files.length > 0;
 
     files.forEach(file => {
       const file_div = document.createElement("div");
@@ -69,7 +72,11 @@ async function get_captures_file() {
       file_div.appendChild(btn_download);
       fileList.appendChild(file_div);
     });
+    if (!hasFiles) {
+      nofile.style.display = "block";
+    }
   } catch (error) {
+    nofile.style.display = "block";
     outputElement.style.display = "block";
     outputElement.style.color = "red";
     outputElement.innerText = error;

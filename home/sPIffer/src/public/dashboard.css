@@ -4,7 +4,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-family: Arial, sans-serif;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
   background: linear-gradient(to bottom right, blue, purple);
   margin: 0;
 }
@@ -66,8 +66,7 @@ body {
   display: flex;
   cursor: pointer;
   margin-bottom: 30px;
-  width: 500px;
-  padding: 10px 2rem 10px 2rem;
+  width: 564px;
   position: relative;
   overflow: hidden;
   background-color: rgba(255, 255, 255, 0.1);
@@ -76,12 +75,12 @@ body {
  .tab button {
   flex: 1;
   color: white;
+  line-height: 20px;
   background-color: transparent;
-  padding: 10px;
+  padding: 12px;
   border: none;
   border-radius: 8px;
   outline: none;
-  margin: 10px;
   font-weight: bold;
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
  }
@@ -116,6 +115,20 @@ h2 {
   padding: 2rem;
   color: #333;
   margin:0;
+}
+
+#no_file {
+  display: none;
+  gap: 1rem;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: lightgray;
+  padding: 1.5rem;
+  color: black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ffffff;
+  border-radius: 8px;
 }
 
 /* Flex container for file name and format */
