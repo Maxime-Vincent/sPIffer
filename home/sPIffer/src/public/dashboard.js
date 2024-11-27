@@ -41,7 +41,8 @@ async function get_captures_file() {
     const response = await fetch('/browsefiles', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
       }
     });
     const result = await response.json();
@@ -102,7 +103,8 @@ async function launch_capture() {
     const response = await fetch('/launch_capture', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
       },
       body: JSON.stringify(data)
     });
@@ -131,7 +133,8 @@ async function logout() {
     const response = await fetch('/logout', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
       }
     });
     if (response.ok) {
@@ -154,7 +157,8 @@ async function download_file(filename) {
     const response = await fetch('/download_capture', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionStorage.getItem('token')}`
       },
       body: JSON.stringify(data)
     });

@@ -15,7 +15,10 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             document.getElementById('errorMessage').style.display = 'block';
             document.getElementById('errorMessage').textContent = errorData.error;
         } else {
-            window.location.href = '/dashboard'; // Redirige en cas de succès
+            const data = await response.json()
+            const token = data.token;
+            sessionStorage.setItem('token', token);
+            window.location.href = '/dashboard';
         }
     } catch (error) {
         document.getElementById('errorMessage').textContent = "Connection error to server";
