@@ -74,6 +74,7 @@ sudo ip link set eth2 mtu 9000
 echo "# Configuring iptables rules for forwarding between eth1 and eth2."
 add_iptables_rule "-A FORWARD -i eth1 -o eth2 -j ACCEPT"
 add_iptables_rule "-A FORWARD -i eth2 -o eth1 -j ACCEPT"
+add_iptables_rule "-A FORWARD -p icmp -j ACCEPT"
 add_iptables_rule "-A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT"
 echo "----------------------------------------------------"
 # Create a new bridge br0
