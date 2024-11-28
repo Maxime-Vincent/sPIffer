@@ -34,7 +34,8 @@ check_interface_exists "eth2"
 echo "# Interfaces eth0, eth1 and eth2 are available."
 echo "----------------------------------------------------"
 # Disable interfaces before configuration
-echo "# Disabling interfaces eth1 and eth2..."
+echo "# Disabling interfaces..."
+sudo ip link set eth0 down
 sudo ip link set eth1 down
 sudo ip link set eth2 down
 # Remove any existing bridge
@@ -47,18 +48,16 @@ else
 fi
 echo "----------------------------------------------------"
 # Enable IPv4 and IPv6 forwarding at kernel level
-echo "# Enabling IPv4 and IPv6 forwarding..."
+echo "# Enabling IPv4 forwarding..."
 echo 1 > /proc/sys/net/ipv4/ip_forward
-echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+# Keep the forwarding persistant inside system file /etc/sysctl.conf
 if ! grep -q "net.ipv4.ip_forward=1" /etc/sysctl.conf; then
    echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
-fi
-if ! grep -q "net.ipv6.conf.all.forwarding=1" /etc/sysctl.conf; then
-   echo "net.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf
+   echo "# IPv4 forwarding configuration added to /etc/sysctl.conf"
 fi
 echo "----------------------------------------------------"
-# Apply advanced network optimizations for IPv4 and IPv6
-echo "# Applying advanced network optimizations for IPv4 and IPv6..."
+# Apply advanced network optimizations for IPv4
+echo "# Applying advanced network optimizations for IPv4..."
 # IPv4 optimizations
 sysctl -w net.core.rmem_default=26214400 > /dev/null
 sysctl -w net.core.wmem_default=26214400 > /dev/null
@@ -76,24 +75,12 @@ sysctl -w net.ipv4.tcp_low_latency=1 > /dev/null
 sysctl -w net.ipv4.ipfrag_high_thresh=16777216 > /dev/null
 sysctl -w net.ipv4.ipfrag_low_thresh=15728640 > /dev/null
 sysctl -w net.ipv4.ipfrag_time=30 > /dev/null
-# IPv6 optimizations
-sysctl -w net.ipv6.conf.all.accept_ra=0 > /dev/null  # Disable RA auto-configuration
-sysctl -w net.ipv6.conf.default.accept_ra=0 > /dev/null
-sysctl -w net.ipv6.conf.all.autoconf=0 > /dev/null
-sysctl -w net.ipv6.conf.default.autoconf=0 > /dev/null
-sysctl -w net.ipv6.conf.all.max_addresses=1 > /dev/null  # Limit the number of assigned addresses
-sysctl -w net.ipv6.conf.default.max_addresses=1 > /dev/null
-sysctl -w net.ipv6.ip6frag_high_thresh=16777216 > /dev/null
-sysctl -w net.ipv6.ip6frag_low_thresh=15728640 > /dev/null
-sysctl -w net.ipv6.ip6frag_time=30 > /dev/null
-sysctl -w net.ipv6.conf.all.forwarding=1 > /dev/null  # Enable IPv6 forwarding
-sysctl -w net.ipv6.conf.default.forwarding=1 > /dev/null
-echo "# Advanced network optimizations applied for IPv4 and IPv6."
+echo "# Advanced network optimizations applied for IPv4."
 echo "----------------------------------------------------"
 # Disable offloading features
 echo "# Disabling offloading features on eth1 and eth2..."
-sudo ethtool -K eth1 tso off gso off gro off lro off rx off tx off sg off ufo off
-sudo ethtool -K eth2 tso off gso off gro off lro off rx off tx off sg off ufo off
+sudo ethtool -K eth1 tso off gso off gro off lro off
+sudo ethtool -K eth2 tso off gso off gro off lro off
 # Set MTU
 echo "# Setting MTU to 9000 on eth1 and eth2..."
 sudo ip link set eth1 mtu 9000
@@ -119,20 +106,17 @@ sudo ip link set eth0 promisc off
 echo "# Configuring iptables rules for forwarding between eth1 and eth2."
 add_iptables_rule "-A FORWARD -i eth1 -o eth2 -j ACCEPT"
 add_iptables_rule "-A FORWARD -i eth2 -o eth1 -j ACCEPT"
-add_iptables_rule "-A FORWARD -p icmp -j ACCEPT"
-add_iptables_rule "-A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT"
+add_iptables_rule "-A FORWARD -i eth1 -o eth2 -p icmp -j ACCEPT"
+add_iptables_rule "-A FORWARD -i eth1 -o eth2 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT"
 # Remove IP addresses from the interfaces
-ip addr flush dev eth1
-ip addr flush dev eth2
+sudo ip addr flush dev eth1
+sudo ip addr flush dev eth2
 # Activate interfaces
-echo "# Activating interfaces eth1, eth2, and br0..."
-ip link set eth1 up
-ip link set eth2 up
-ip link set br0 up
-echo "----------------------------------------------------"
-# Verify the bridge configuration
-echo "# Verifying bridge br0 configuration..."
-brctl showstp br0
+echo "# Activating interfaces eth0, eth1, eth2, and br0..."
+sudo ip link set eth0 up
+sudo ip link set br0 up
+sudo ip link set eth1 up
+sudo ip link set eth2 up
 echo "----------------------------------------------------"
 echo "# Network configuration and IPv4/IPv6 optimization completed."
 echo "----------------------------------------------------"
