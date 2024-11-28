@@ -106,7 +106,6 @@ sudo ip link set eth0 promisc off
 echo "# Configuring iptables rules for forwarding between eth1 and eth2."
 add_iptables_rule "-A FORWARD -i eth1 -o eth2 -j ACCEPT"
 add_iptables_rule "-A FORWARD -i eth2 -o eth1 -j ACCEPT"
-add_iptables_rule "-A FORWARD -i eth1 -o eth2 -p icmp -j ACCEPT"
 add_iptables_rule "-A FORWARD -i eth1 -o eth2 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT"
 # Remove IP addresses from the interfaces
 sudo ip addr flush dev eth1
