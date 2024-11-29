@@ -83,6 +83,7 @@ sudo ethtool -K eth1 tso off gso off gro off lro off
 sudo ethtool -K eth2 tso off gso off gro off lro off
 # Set MTU
 echo "# Setting MTU to 9000 on eth1 and eth2..."
+sudo ip link set br0 mtu 9000
 sudo ip link set eth1 mtu 9000
 sudo ip link set eth2 mtu 9000
 echo "----------------------------------------------------"
@@ -106,7 +107,6 @@ sudo ip link set eth0 promisc off
 echo "# Configuring iptables rules for forwarding between eth1 and eth2."
 add_iptables_rule "-A FORWARD -i eth1 -o eth2 -j ACCEPT"
 add_iptables_rule "-A FORWARD -i eth2 -o eth1 -j ACCEPT"
-add_iptables_rule "-A FORWARD -i eth1 -o eth2 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT"
 # Remove IP addresses from the interfaces
 sudo ip addr flush dev eth1
 sudo ip addr flush dev eth2
