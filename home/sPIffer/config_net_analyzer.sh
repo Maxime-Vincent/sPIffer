@@ -78,9 +78,10 @@ fi
 sysctl -p /etc/sysctl.conf
 echo "----------------------------------------------------"
 
-# Application des optimisations réseau pour IPv4
-echo "# Applying advanced network optimizations for IPv4..."
-cat <<EOF > /etc/sysctl.d/custom_network.conf
+# Application des optimisations réseau pour IPv4 si le fichier n'existe pas
+if [ ! -f /etc/sysctl.d/custom_network.conf ]; then
+    echo "# Applying advanced network optimizations for IPv4..."
+    cat <<EOF > /etc/sysctl.d/custom_network.conf
 net.core.rmem_default=26214400
 net.core.wmem_default=26214400
 net.core.rmem_max=67108864
@@ -98,8 +99,11 @@ net.ipv4.ipfrag_high_thresh=16777216
 net.ipv4.ipfrag_low_thresh=15728640
 net.ipv4.ipfrag_time=30
 EOF
-sysctl --system
-echo "# Advanced network optimizations applied for IPv4."
+    sysctl --system
+    echo "# Advanced network optimizations applied for IPv4."
+else
+    echo "# IPv4 optimizations already applied. Skipping configuration."
+fi
 echo "----------------------------------------------------"
 
 # Désactivation des fonctionnalités d'offloading
