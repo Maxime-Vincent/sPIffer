@@ -39,6 +39,37 @@ add_iptables_rule() {
     fi
 }
 
+# Fonction pour configurer le MTU avec essais progressifs
+configure_mtu() {
+    local interface="$1"
+    local initial_mtu="$2"
+    local step_down="$3"
+
+    echo "# Attempting to configure MTU for $interface to $initial_mtu..."
+
+    # Essayer de définir le MTU initial
+    if sudo ip link set dev "$interface" mtu "$initial_mtu"; then
+        echo "# MTU set to $initial_mtu on $interface."
+    else
+        echo "# Failed to set MTU to $initial_mtu on $interface. Trying lower values..."
+        # Réduire progressivement la valeur du MTU jusqu'à ce qu'elle soit acceptée
+        while ((initial_mtu > 1500)); do
+            initial_mtu=$((initial_mtu - step_down))
+            echo "# Trying MTU $initial_mtu on $interface..."
+            if sudo ip link set dev "$interface" mtu "$initial_mtu"; then
+                echo "# MTU successfully set to $initial_mtu on $interface."
+                break
+            fi
+        done
+
+        # Si on atteint 1500 sans succès
+        if ((initial_mtu <= 1500)); then
+            echo "# Error: Could not set MTU on $interface. Falling back to default MTU of 1500."
+            sudo ip link set dev "$interface" mtu 1500
+        fi
+    fi
+}
+
 # Désactivation du Wi-Fi
 echo "# Disabling Wi-Fi (wlan0)..."
 sudo ip link set wlan0 down
@@ -78,7 +109,7 @@ fi
 sysctl -p /etc/sysctl.conf
 echo "----------------------------------------------------"
 
-# Application des optimisations réseau pour IPv4 si le fichier n'existe pas
+# Application des optimisations réseau pour IPv4
 if [ ! -f /etc/sysctl.d/custom_network.conf ]; then
     echo "# Applying advanced network optimizations for IPv4..."
     cat <<EOF > /etc/sysctl.d/custom_network.conf
@@ -112,11 +143,10 @@ for interface in eth1 eth2; do
     sudo ethtool -K "$interface" tso off gso off gro off lro off
 done
 
-# Configuration du MTU
-echo "# Setting MTU to 9000 on eth1, eth2, and br0..."
-sudo ip link set eth1 mtu 9000
-sudo ip link set eth2 mtu 9000
-sudo ip link set br0 mtu 9000
+# Configuration du MTU avec tests progressifs
+echo "# Setting MTU to 9000 on eth1 and eth2..."
+configure_mtu "eth1" 9000 500
+configure_mtu "eth2" 9000 500
 echo "----------------------------------------------------"
 
 # Création du pont réseau
