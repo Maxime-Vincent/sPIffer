@@ -2,18 +2,10 @@
 
 set -e
 
-USER=$(logname)
-
-# Move the project into user folder
-
-sudo rm -rf "/home/$USER/sPIffer"
-sudo mv /home/sPIffer "/home/$USER/sPIffer"
-
-PKG_PATH="/home/$USER/sPIffer"
-CERT_PATH="/home/$USER/sPIffer/src/certificate"
+PKG_PATH="/home/sPIffer"
+CERT_PATH="/home/sPIffer/src/certificate"
 
 sudo chown -R root:root $PKG_PATH
-sudo chown -R "$USER":"$USER" $PKG_PATH
 sudo chmod -R 777 $PKG_PATH
 
 # Recreate new certificate for webserver
@@ -21,8 +13,9 @@ cd $CERT_PATH
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt -config openssl.cnf > /dev/null 2>&1
 
 echo "# Launch BOOT script"
-sudo .$PKG_PATH/eth_iface_boot.sh
-sudo .$PKG_PATH/config_net_analyzer.sh
+cd $PKG_PATH
+sudo ./eth_iface_boot.sh
+sudo ./config_net_analyzer.sh
 echo "# sPIffer well installed."
 
 exit 0
