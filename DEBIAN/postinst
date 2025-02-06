@@ -2,10 +2,17 @@
 
 set -e
 
-PKG_PATH="/home/sPIffer"
-CERT_PATH="/home/sPIffer/src/certificate"
+USER=$(logname)
+
+# Move the project into user folder
+
+sudo mv /home/sPIffer "/home/$USER/sPIffer"
+
+PKG_PATH="/home/$USER/sPIffer"
+CERT_PATH="/home/$USER/sPIffer/src/certificate"
 
 sudo chown -R root:root $PKG_PATH
+sudo chown -R "$USER":"$USER" $PKG_PATH
 sudo chmod -R 777 $PKG_PATH
 
 # Recreate new certificate for webserver
