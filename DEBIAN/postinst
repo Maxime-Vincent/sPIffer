@@ -6,6 +6,7 @@ USER=$(logname)
 
 # Move the project into user folder
 
+sudo rm -rf "/home/$USER/sPIffer"
 sudo mv /home/sPIffer "/home/$USER/sPIffer"
 
 PKG_PATH="/home/$USER/sPIffer"
