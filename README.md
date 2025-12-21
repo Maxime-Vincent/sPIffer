@@ -33,12 +33,6 @@ sPIffer provides a simple, reproducible inline observation box based on standard
 
 🧠 How It Works
 
-[DUT / PLC] ── eth1 ──┐
-                      │  (transparent L2 bridge)
-                   [ sPIffer ]
-                      │
-[Network / PC] ── eth2 ──┘
-
 •	eth1 and eth2 are connected through a Linux bridge (br0)
 	•	traffic flows at Layer 2 (Ethernet), like a switch
 	•	packet capture is performed read-only on the bridge
