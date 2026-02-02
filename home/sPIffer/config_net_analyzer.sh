@@ -193,7 +193,7 @@ echo "----------------------------------------------------"
 # Démarrage du serveur web
 echo "# Starting the web server..."
 cd /home/sPIffer || exit 1
-sudo nohup npm start > /var/log/npm_server.log 2>&1 &
+sudo nohup npm start 2>&1 | sudo tee /var/log/npm_server.log > /dev/null &
 sleep 2
 
 if pgrep -f "npm start" > /dev/null; then
