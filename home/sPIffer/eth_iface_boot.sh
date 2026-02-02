@@ -39,49 +39,33 @@ sudo chmod +x "$SCRIPT_PATH"
 # ------------------------------------------------------------
 # Create/overwrite the bridge setup systemd service
 # ------------------------------------------------------------
-sudo tee "$SERVICE_FILE" > /dev/null <<EOF
+sudo tee "$SERVICE_FILE" > /dev/null <<'EOF'
 [Unit]
-Description=sPIffer bridge setup (br0: eth1 <-> eth2)
-Wants=network-online.target
-After=network-online.target
+Description=sPIffer iface setup (eth1 <-> eth2) via config_net_analyzer
+Wants=network-pre.target
+After=network-pre.target
+# Attendre que les interfaces existent vraiment (device units)
+BindsTo=sys-subsystem-net-devices-eth1.device sys-subsystem-net-devices-eth2.device
+After=sys-subsystem-net-devices-eth1.device sys-subsystem-net-devices-eth2.device
 
 [Service]
 Type=oneshot
 
-# Wait (up to ~30s) for eth1 and eth2 to exist (useful for USB NICs)
-ExecStartPre=/bin/sh -c 'for i in \$(seq 1 30); do ip link show eth1 >/dev/null 2>&1 && ip link show eth2 >/dev/null 2>&1 && exit 0; sleep 1; done; exit 1'
+# Sécurité: si une des interfaces n'existe pas encore -> échec
+ExecStartPre=/bin/sh -c 'test -e /sys/class/net/eth1 && test -e /sys/class/net/eth2'
 
-ExecStart=${SCRIPT_PATH} start
-ExecStop=${SCRIPT_PATH} stop
+# Optionnel mais très utile: attendre que le kernel annonce une "operstate" (évite certains boot USB)
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 20); do s1=$(cat /sys/class/net/eth1/operstate 2>/dev/null || true); s2=$(cat /sys/class/net/eth2/operstate 2>/dev/null || true); if [ -n "$s1" ] && [ -n "$s2" ]; then exit 0; fi; sleep 1; done; exit 1'
+
+ExecStart=/home/sPIffer/config_net_analyzer.sh apply
+ExecStop=/home/sPIffer/config_net_analyzer.sh stop
 
 RemainAfterExit=yes
-TimeoutStartSec=30
+TimeoutStartSec=45
 TimeoutStopSec=10
 
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Safe permissions (never 777)
-sudo chown root:root "$SERVICE_FILE"
-sudo chmod 644 "$SERVICE_FILE"
-
-# ------------------------------------------------------------
-# Create/overwrite the dedicated web server systemd service
-# ------------------------------------------------------------
-sudo tee "$WEB_SERVICE_FILE" > /dev/null <<EOF
-[Unit]
-Description=sPIffer Web Server (Node)
-After=network-online.target ${SERVICE_NAME}.service
-Wants=network-online.target
-
-[Service]
-Type=simple
-User=sPIffer
-WorkingDirectory=${WEB_WORKDIR}
-Environment=NODE_ENV=production
-ExecStart=${WEB_EXEC_START}
-Restart=always
+# En cas d'échec boot (USB NIC lente, etc.), retenter
+Restart=on-failure
 RestartSec=2
 
 [Install]
