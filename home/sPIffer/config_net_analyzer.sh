@@ -106,20 +106,24 @@ echo "----------------------------------------------------"
 echo "# Disabling offloading features on eth1 and eth2..."
 sudo ethtool -K eth1 tso off gso off gro off lro off
 sudo ethtool -K eth2 tso off gso off gro off lro off
-# Set MTU
-echo "# Setting MTU to 9000 on eth1 and eth2..."
+# ----------------------------------------------------
+# Create the bridge br0
+# ----------------------------------------------------
+echo "# Creating the bridge br0..."
+sudo brctl addbr br0
+# Set bridge priority and forward delay
+sudo brctl setbridgeprio br0 0
+sudo brctl setfd br0 0
+# Set MTU (bridge must exist first)
+echo "# Setting MTU to 9000 on br0, eth1 and eth2..."
 sudo ip link set br0 mtu 9000
 sudo ip link set eth1 mtu 9000
 sudo ip link set eth2 mtu 9000
-echo "----------------------------------------------------"
-# Create the bridge
-echo "# Creating the bridge br0 and adding interfaces eth1 and eth2..."
-sudo brctl addbr br0
+# Add interfaces to the bridge
+echo "# Adding eth1 and eth2 to bridge br0..."
 sudo brctl addif br0 eth1
 sudo brctl addif br0 eth2
-# Set priority and delay
-sudo brctl setbridgeprio br0 0
-sudo brctl setfd br0 0
+echo "----------------------------------------------------"
 # Enable promiscuous mode
 echo "# Enabling promiscuous mode on eth1, eth2, and br0..."
 sudo ip link set eth1 promisc on
