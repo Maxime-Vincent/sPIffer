@@ -126,7 +126,7 @@ echo "----------------------------------------------------"
 # Start the web server
 echo "# Starting the web server..."
 cd /home/sPIffer
-sudo nohup npm start > /var/log/npm_server.log 2>&1 &
+sudo nohup npm start 2>&1 | sudo tee /var/log/npm_server.log > /dev/null &
 echo "# Web server started successfully."
 echo "----------------------------------------------------"
 echo "# Network configuration and optimizations completed."
