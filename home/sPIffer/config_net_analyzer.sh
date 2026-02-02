@@ -33,6 +33,31 @@ check_interface_exists "eth1"
 check_interface_exists "eth2"
 echo "# Interfaces eth0, eth1 and eth2 are available."
 echo "----------------------------------------------------"
+# ------------------------------------------------------------
+# Prevent NetworkManager from managing eth1/eth2
+# (critical to keep br0 stable and transparent)
+# ------------------------------------------------------------
+if command -v nmcli >/dev/null 2>&1; then
+    echo "# Configuring NetworkManager to ignore eth1 and eth2..."
+
+    # Immediate effect
+    sudo nmcli dev set eth1 managed no || true
+    sudo nmcli dev set eth2 managed no || true
+
+    # Persistent config across reboots
+    sudo mkdir -p /etc/NetworkManager/conf.d
+    sudo tee /etc/NetworkManager/conf.d/99-spiffer-unmanaged.conf >/dev/null <<'EOF'
+[keyfile]
+unmanaged-devices=interface-name:eth1;interface-name:eth2
+EOF
+
+    echo "# NetworkManager unmanaged config applied (eth1, eth2)."
+else
+    echo "# nmcli not found -> skipping NetworkManager unmanaged configuration."
+fi
+
+echo "----------------------------------------------------"
+
 # Disable interfaces before configuration
 echo "# Disabling interfaces..."
 sudo ip link set eth0 down
