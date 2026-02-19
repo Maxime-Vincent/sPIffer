@@ -1,6 +1,0 @@
-bridge-utils
-iptables
-libpam0g-dev
-nodejs
-npm
-tshark

@@ -9,41 +9,102 @@
 > - npm: ```sudo apt-get install npm```
 > - libpam0g-dev: ```sudo apt-get install libpam0g-dev```
 
-## Script Description
-This package configures network forwarding on a Raspberry Pi by setting up a bridge (br0) between two added Ethernet interfaces (eth1 and eth2). It also enables traffic capture beyond the bridge (br0) which is in promiscuous mode.
-## Key Features
-1. Remove Existing Bridges: The script starts by clearing any pre-existing network bridges to ensure a clean setup.
-2. Check Network Interfaces: It verifies the availability of the required interfaces (eth0, eth1, and eth2) to ensure they are active and ready for configuration.
-3. Enable IP Forwarding: The script enables IP forwarding, allowing packets to be routed between the interfaces.
-4. Create a Bridge: It creates a new bridge named br0 and attaches eth1 and eth2 to it, facilitating the transfer of traffic between these two interfaces.
-5. It launches a web server that allows the user to start capturing and downloading network traffic.
-## Use Case
-This setup is ideal for scenarios where network traffic analysis is needed, such as monitoring for performance, security, or debugging purposes. By capturing traffic in real-time, users can gain insights into data flow and network behavior.
+Passive Inline Network Tap & Bridge Sniffer for Industrial Test & Debug
 
-## Manual installation
+sPIffer is a passive network capture and analysis tool designed for industrial, test, and debugging environments.
+It operates as an inline Ethernet tap using a transparent Layer-2 Linux bridge, allowing traffic observation without modifying the system under test.
 
-### Move sPIffer folder inside /home
+⚠️ sPIffer does not modify, inject, redirect, replay, or manipulate network traffic.
+It is intended only for networks you own or are explicitly authorized to analyze.
 
-    sudo mv <sPIffer old path> /home
+⸻
 
-### Install packages required
+🎯 Project Goal
 
-    sudo ./requirements.sh
+In industrial environments (PLCs, IO modules, HMIs, test benches, field protocols), it is often necessary to:
+	•	observe real network traffic without impacting behavior
+	•	capture exchanges for offline analysis
+	•	debug intermittent issues (timeouts, resets, latency)
+	•	generate traceable network evidence (PCAPs with timestamps)
 
-### Create certificate with openssl
+sPIffer provides a simple, reproducible inline observation box based on standard Linux networking.
 
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt -config openssl.cnf
-    sudo mv server.key /home/sPIffer/src/certificate
-    sudo mv server.crt /home/sPIffer/src/certificate
+⸻
 
-### Install npm node modules
+🧠 How It Works
 
-    sudo npm install
+•	eth1 and eth2 are connected through a Linux bridge (br0)
+	•	traffic flows at Layer 2 (Ethernet), like a switch
+	•	packet capture is performed read-only on the bridge
+	•	no NAT, proxy, routing, or packet alteration
 
-### Launch Server
+👉 Network behavior remains strictly unchanged.
 
-    sudo node server.js
+⸻
 
-or
+✅ What sPIffer Does
+	•	Creates a transparent Ethernet L2 bridge
+	•	Enables promiscuous mode for capture only
+	•	Captures traffic using tshark / dumpcap
+	•	Provides PCAP download capability
+	•	Offers a local web interface to control captures
 
-    sudo npm start
+⸻
+
+❌ What sPIffer Does NOT Do
+	•	❌ modify packets
+	•	❌ inject or replay traffic
+	•	❌ perform application-level interception (TLS, credentials, etc.)
+	•	❌ act as a network proxy or router
+	•	❌ bypass or weaken security mechanisms
+
+sPIffer is not an offensive MITM tool.
+
+⸻
+
+🧪 Typical Use Cases
+	•	Modbus TCP, EtherNet/IP, OPC UA, and industrial TCP/IP debugging
+	•	Intermittent communication issue analysis
+	•	Protocol compliance validation
+	•	Network non-regression testing
+	•	Functional network audits in controlled environments
+
+⸻
+
+🖥️ Target Environment
+	•	Raspberry Pi (or equivalent ARM/x86 system)
+	•	Linux OS
+	•	At least two physical Ethernet interfaces
+	•	Root access required (bridge + packet capture)
+
+⸻
+
+🔐 Security & Best Practices
+	•	The web interface should be used on a trusted network
+	•	Recommended:
+	•	bind to localhost
+	•	restrict access via SSH tunnel or VPN
+	•	regularly clean captured PCAP files
+	•	Captures may contain sensitive data → handle accordingly
+
+⸻
+
+⚠️ Legal Notice
+
+This tool is intended for:
+	•	test environments
+	•	private industrial networks
+	•	systems for which you have explicit authorization
+
+The user is solely responsible for ensuring legal and compliant usage.
+
+⸻
+
+🚧 Project Status
+
+sPIffer is currently:
+	•	functional for passive network capture
+	•	evolving toward a reusable library
+	•	focused on robustness, traceability, and industrial QA
+
+Contributions and feedback are welcome.
