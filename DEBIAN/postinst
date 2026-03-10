@@ -1,21 +1,20 @@
 #!/bin/bash
-
 set -e
 
-PKG_PATH="/home/sPIffer"
-CERT_PATH="/home/sPIffer/src/certificate"
+case "$1" in
+  configure)
+    echo "# Creating spiffer system user"
+    if ! getent passwd spiffer >/dev/null 2>&1; then
+      useradd --system --no-create-home --shell /usr/sbin/nologin spiffer
+    fi
 
-sudo chown -R root:root $PKG_PATH
-sudo chmod -R 777 $PKG_PATH
+    echo "# Generating HTTPS certificate if needed"
+    if [ -x /usr/lib/spiffer/scripts/spiffer-generate-cert.sh ]; then
+      /usr/lib/spiffer/scripts/spiffer-generate-cert.sh || true
+    fi
+    ;;
+esac
 
-# Recreate new certificate for webserver
-cd $CERT_PATH
-sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt -config openssl.cnf > /dev/null 2>&1
-
-echo "# Launch BOOT script"
-cd $PKG_PATH
-sudo ./eth_iface_boot.sh
-sudo ./config_net_analyzer.sh
-echo "# sPIffer well installed."
+#DEBHELPER#
 
 exit 0

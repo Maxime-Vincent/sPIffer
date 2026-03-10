@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sPIffer - Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <button id="logout" type="button" aria-label="Logout">
+        <span class="gg-log-out"></span>
+    </button>
+
+    <div class="tab">
+        <button id="CaptureTab" class="tab-link active" data-tab="capture" type="button">Capture</button>
+        <button id="BrowseFilesTab" class="tab-link" data-tab="browse" type="button">Browse Files</button>
+    </div>
+
+    <div class="card">
+        <div id="capture-content" class="tab-content">
+            <h2>Network Capture</h2>
+
+            <div class="file-input-group">
+                <div class="input-container">
+                    <label for="filename">Filename</label>
+                    <input
+                        type="text"
+                        id="filename"
+                        name="filename"
+                        placeholder="Enter filename..."
+                        autocomplete="off"
+                        required
+                    >
+                </div>
+
+                <div class="select-container">
+                    <label for="format">Format</label>
+                    <select id="format" name="format">
+                        <option value="pcapng">.pcapng</option>
+                        <option value="pcap">.pcap</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <label for="time_delay">Delay</label>
+                    <input
+                        type="number"
+                        id="time_delay"
+                        name="time_delay"
+                        placeholder="Time delay"
+                        min="1"
+                        step="1"
+                        required
+                    >
+                    <select id="delay_format" name="delay_format">
+                        <option value="seconds">seconds</option>
+                        <option value="minutes">minutes</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="submit-btn" type="button">Launch Capture</button>
+        </div>
+
+        <div id="browse-content" class="tab-content" style="display: none;">
+            <h2>Browse Files</h2>
+            <div id="folder"></div>
+            <p id="no_file" style="display: none;">No capture file retrieved.</p>
+        </div>
+    </div>
+
+    <p id="output" style="display: none;" aria-live="polite"></p>
+
+    <footer>
+        <p>© 2024 sPIffer - All rights reserved.</p>
+    </footer>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+[Unit]
+Description=sPIffer web interface
+After=network-online.target spiffer-iface-config.service
+Wants=network-online.target
+Requires=spiffer-iface-config.service
+
+[Service]
+Type=simple
+User=spiffer
+Group=spiffer
+WorkingDirectory=/usr/lib/spiffer
+ExecStart=/usr/bin/node /usr/lib/spiffer/src/server.js
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+
+# crée /var/lib/spiffer, /var/log/spiffer et /run/spiffer
+StateDirectory=spiffer
+LogsDirectory=spiffer
+RuntimeDirectory=spiffer
+
+[Install]
+WantedBy=multi-user.target

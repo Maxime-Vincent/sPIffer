@@ -1,0 +1,18 @@
+src/server.js                          usr/lib/spiffer/src/
+src/certificate/openssl.cnf            usr/lib/spiffer/src/certificate/
+
+public/*                               usr/lib/spiffer/public/
+
+config/spiffer.env                     etc/spiffer/spiffer.env
+
+scripts/config_net_analyzer.sh         usr/sbin/spiffer-net-setup
+scripts/spiffer-generate-cert.sh       usr/lib/spiffer/scripts/
+
+package.json                           usr/lib/spiffer/
+package-lock.json                      usr/lib/spiffer/
+
+systemd/spiffer-iface-config.service   lib/systemd/system/
+systemd/spiffer-web.service            lib/systemd/system/
+
+README.md                              usr/share/doc/spiffer/
+LICENSE                                usr/share/doc/spiffer/

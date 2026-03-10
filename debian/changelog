@@ -1,0 +1,5 @@
+spiffer (2.0.0) unstable; urgency=medium
+
+  * Initial Debian package.
+
+ -- Maxime Vincent <max06vincent@gmail.com>  Tue, 10 Mar 2026 12:00:00 +0100

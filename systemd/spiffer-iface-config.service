@@ -1,0 +1,16 @@
+[Unit]
+Description=sPIffer network interface setup
+Wants=network-pre.target
+After=network-pre.target
+ConditionPathExists=/usr/sbin/spiffer-net-setup
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/spiffer-net-setup apply
+ExecStop=/usr/sbin/spiffer-net-setup stop
+RemainAfterExit=yes
+TimeoutStartSec=45
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
