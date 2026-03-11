@@ -24,7 +24,9 @@ The project is designed to run on **Raspberry Pi OS (Bookworm)**.
 
 sPIffer configures the following network topology:
 
-eth1 ─────┐ ├── br0 (bridge) ── Raspberry Pi eth2 ─────┘
+eth1 ───────────┐ 
+                ├── br0 (bridge) ── 
+RaspPI eth2 ────┘
 
 The bridge operates in **promiscuous mode** to allow traffic capture.
 
