@@ -1,49 +1,179 @@
 # sPIffer
 
-> [!NOTE]
-> Some dependencies are needed if you choose not to install it using the ```requirements.sh```:  
-> - tshark: ```sudo apt-get install tshark```  
-> - iptables:  ```sudo apt-get install iptables```  
-> - bridge-utils: ```sudo apt-get install bridge-utils```
-> - nodejs: ```sudo apt-get install nodejs```
-> - npm: ```sudo apt-get install npm```
-> - libpam0g-dev: ```sudo apt-get install libpam0g-dev```
+sPIffer is a Raspberry Pi network analyser and inline sniffer. It
+configures a transparent bridge between two network interfaces and
+provides a web interface to capture and download traffic.
 
-## Script Description
-This package configures network forwarding on a Raspberry Pi by setting up a bridge (br0) between two added Ethernet interfaces (eth1 and eth2). It also enables traffic capture beyond the bridge (br0) which is in promiscuous mode.
-## Key Features
-1. Remove Existing Bridges: The script starts by clearing any pre-existing network bridges to ensure a clean setup.
-2. Check Network Interfaces: It verifies the availability of the required interfaces (eth0, eth1, and eth2) to ensure they are active and ready for configuration.
-3. Enable IP Forwarding: The script enables IP forwarding, allowing packets to be routed between the interfaces.
-4. Create a Bridge: It creates a new bridge named br0 and attaches eth1 and eth2 to it, facilitating the transfer of traffic between these two interfaces.
-5. It launches a web server that allows the user to start capturing and downloading network traffic.
-## Use Case
-This setup is ideal for scenarios where network traffic analysis is needed, such as monitoring for performance, security, or debugging purposes. By capturing traffic in real-time, users can gain insights into data flow and network behavior.
+The project is designed to run on **Raspberry Pi OS (Bookworm)**.
 
-## Manual installation
+------------------------------------------------------------------------
 
-### Move sPIffer folder inside /home
+# Features
 
-    sudo mv <sPIffer old path> /home
+-   Transparent network bridge between two Ethernet interfaces
+-   Promiscuous traffic capture using **tshark**
+-   Web interface to control captures
+-   Automatic TLS certificate generation
+-   Automatic network configuration
+-   Systemd services for automatic startup
+-   Packaged as a **Debian package (.deb)**
 
-### Install packages required
+------------------------------------------------------------------------
 
-    sudo ./requirements.sh
+# Architecture
 
-### Create certificate with openssl
+sPIffer configures the following network topology:
 
-    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout server.key -out server.crt -config openssl.cnf
-    sudo mv server.key /home/sPIffer/src/certificate
-    sudo mv server.crt /home/sPIffer/src/certificate
+eth1 ─────┐ ├── br0 (bridge) ── Raspberry Pi eth2 ─────┘
 
-### Install npm node modules
+The bridge operates in **promiscuous mode** to allow traffic capture.
 
-    sudo npm install
+------------------------------------------------------------------------
 
-### Launch Server
+# Dependencies
 
-    sudo node server.js
+These dependencies are automatically installed when using the Debian
+package.
+
+Manual installation requires:
+
+-   tshark
+-   iptables
+-   nodejs
+-   npm
+-   libpam0g-dev
+-   network-manager
+-   openssl
+
+Example installation:
+
+sudo apt install tshark iptables bridge-utils nodejs npm libpam0g-dev
+network-manager openssl
+
+------------------------------------------------------------------------
+
+# Recommended Installation (Debian package)
+
+Download the latest release:
+
+spiffer_2.0.0_arm64.deb
+
+Install:
+
+sudo dpkg -i spiffer_2.0.0_arm64.deb sudo apt-get -f install
+
+The installation automatically:
+
+-   creates the **spiffer** system user
+-   installs all files under `/usr/lib/spiffer`
+-   installs systemd services
+-   generates a TLS certificate
+-   prepares the network bridge
+
+------------------------------------------------------------------------
+
+# System Services
+
+sPIffer installs two services.
+
+### Network configuration
+
+spiffer-iface-config.service
+
+Responsible for:
+
+-   configuring the bridge
+-   preparing the capture interfaces
+
+### Web interface
+
+spiffer-web.service
+
+Responsible for:
+
+-   running the Node.js server
+-   exposing the web interface
+
+Check status:
+
+systemctl status spiffer-iface-config.service systemctl status
+spiffer-web.service
+
+Restart services:
+
+sudo systemctl restart spiffer-iface-config.service sudo systemctl
+restart spiffer-web.service
+
+------------------------------------------------------------------------
+
+# Web Interface
+
+Once started, the interface is accessible at:
+
+https://`<raspberry-ip>`{=html}:3000
+
+From the dashboard you can:
+
+-   start traffic capture
+-   stop capture
+-   download `.pcap` files
+
+------------------------------------------------------------------------
+
+# Manual Installation (Development)
+
+Clone the repository:
+
+git clone https://github.com/Maxime-Vincent/sPIffer.git cd sPIffer
+
+Install dependencies:
+
+sudo ./requirements.sh
+
+Install Node modules:
+
+npm install
+
+Start the server manually:
+
+sudo node src/server.js
 
 or
 
-    sudo npm start
+npm start
+
+------------------------------------------------------------------------
+
+# Configuration
+
+Environment configuration is stored in:
+
+/etc/spiffer/spiffer.env
+
+You can modify parameters such as:
+
+-   network interfaces
+-   capture settings
+-   server configuration
+
+Restart services after modification:
+
+sudo systemctl restart spiffer-web
+
+------------------------------------------------------------------------
+
+# Development
+
+To build the Debian package:
+
+dpkg-buildpackage -us -uc
+
+This generates:
+
+spiffer_2.0.0_arm64.deb
+
+------------------------------------------------------------------------
+
+# License
+
+MIT License
