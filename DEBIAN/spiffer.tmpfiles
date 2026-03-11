@@ -1,3 +1,0 @@
-d /var/lib/spiffer 0750 spiffer spiffer -
-d /var/lib/spiffer/captures 0750 spiffer spiffer -
-d /var/log/spiffer 0750 spiffer spiffer -
