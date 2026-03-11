@@ -9,15 +9,26 @@ Type=simple
 User=spiffer
 Group=spiffer
 WorkingDirectory=/usr/lib/spiffer
+
+ExecStartPre=/bin/bash -c 'test -r /etc/spiffer/certs/server.key || { echo "Missing TLS private key"; exit 1; }'
+ExecStartPre=/bin/bash -c 'test -r /etc/spiffer/certs/server.crt || { echo "Missing TLS certificate"; exit 1; }'
+
 ExecStart=/usr/bin/node /usr/lib/spiffer/src/server.js
+
 Restart=on-failure
 RestartSec=5
 Environment=NODE_ENV=production
 
-# crée /var/lib/spiffer, /var/log/spiffer et /run/spiffer
 StateDirectory=spiffer
 LogsDirectory=spiffer
 RuntimeDirectory=spiffer
+
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target

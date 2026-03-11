@@ -87,8 +87,8 @@ generate_certificate() {
         -config "$OPENSSL_CNF"
 
     log "Applying ownership and permissions"
-    chown root:root "$KEY_FILE" "$CRT_FILE"
-    chmod 600 "$KEY_FILE"
+    chown root:spiffer "$KEY_FILE" "$CRT_FILE"
+    chmod 640 "$KEY_FILE"
     chmod 644 "$CRT_FILE"
 }
 
