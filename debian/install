@@ -2,6 +2,7 @@ src/server.js                          usr/lib/spiffer/src/
 src/certificate/openssl.cnf            usr/lib/spiffer/src/certificate/
 
 public/*                               usr/lib/spiffer/public/
+node_modules/*                         usr/lib/spiffer/node_modules/
 
 config/spiffer.env                     etc/spiffer/spiffer.env
 

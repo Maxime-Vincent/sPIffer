@@ -2,7 +2,10 @@ Source: spiffer
 Section: net
 Priority: optional
 Maintainer: Maxime Vincent <max06vincent@gmail.com>
-Build-Depends: debhelper-compat (= 13)
+Build-Depends:
+ debhelper-compat (= 13),
+ nodejs,
+ npm
 Standards-Version: 4.7.3
 Rules-Requires-Root: no
 
