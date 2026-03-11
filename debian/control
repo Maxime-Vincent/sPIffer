@@ -1,0 +1,26 @@
+Source: spiffer
+Section: net
+Priority: optional
+Maintainer: Maxime Vincent <max06vincent@gmail.com>
+Build-Depends:
+ debhelper-compat (= 13),
+ nodejs,
+ npm,
+ libpam0g-dev
+Standards-Version: 4.7.3
+Rules-Requires-Root: no
+
+Package: spiffer
+Architecture: any
+Depends:
+ ${misc:Depends},
+ nodejs,
+ network-manager,
+ tshark,
+ openssl,
+ libpam0g-dev,
+ npm,
+ iptables
+Description: Raspberry Pi network analyser and inline sniffer
+ sPIffer turns a Raspberry Pi into a network analyser, packet sniffer,
+ and inline network tap with a web interface.
