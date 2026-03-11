@@ -1,7 +1,8 @@
 [Unit]
 Description=sPIffer network interface setup
-Wants=network-pre.target
-After=network-pre.target
+Requires=NetworkManager.service
+Wants=network-online.target
+After=NetworkManager.service network-online.target
 ConditionPathExists=/usr/sbin/spiffer-net-setup
 
 [Service]
