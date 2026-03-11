@@ -5,12 +5,13 @@ Maintainer: Maxime Vincent <max06vincent@gmail.com>
 Build-Depends:
  debhelper-compat (= 13),
  nodejs,
- npm
+ npm,
+ libpam0g-dev
 Standards-Version: 4.7.3
 Rules-Requires-Root: no
 
 Package: spiffer
-Architecture: arm64
+Architecture: any
 Depends:
  ${misc:Depends},
  nodejs,

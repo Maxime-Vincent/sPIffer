@@ -4,9 +4,9 @@ src/certificate/openssl.cnf            usr/lib/spiffer/src/certificate/
 public/*                               usr/lib/spiffer/public/
 node_modules/*                         usr/lib/spiffer/node_modules/
 
-config/spiffer.env                     etc/spiffer/spiffer.env
+config/spiffer.env                     etc/spiffer/
 
-scripts/config_net_analyzer.sh         usr/sbin/spiffer-net-setup
+scripts/config_net_analyzer.sh         usr/lib/spiffer/scripts/
 scripts/spiffer-generate-cert.sh       usr/lib/spiffer/scripts/
 
 package.json                           usr/lib/spiffer/
