@@ -40,7 +40,7 @@ case "$1" in
     install -d -o spiffer -g spiffer -m 0750 /var/lib/spiffer
     install -d -o spiffer -g spiffer -m 0750 /var/lib/spiffer/captures
     install -d -o root -g root -m 0755 /etc/spiffer
-    install -d -o root -g root -m 0755 /etc/spiffer/certs
+    install -d -o root -g spiffer -m 0750 /etc/spiffer/certs
 
     # PAM service for web authentication
     if [ ! -f /etc/pam.d/spiffer-web ]; then
@@ -53,12 +53,22 @@ EOF
       chmod 0644 /etc/pam.d/spiffer-web
     fi
 
-    # systemd reload
-    if command -v systemctl >/dev/null 2>&1; then
-      systemctl daemon-reload >/dev/null 2>&1 || true
-      systemctl enable spiffer-web.service >/dev/null 2>&1 || true
-      systemctl restart spiffer-web.service >/dev/null 2>&1 || true
+    # TLS certificate generation
+    if [ -x /usr/lib/spiffer/scripts/spiffer-generate-cert.sh ]; then
+      /usr/lib/spiffer/scripts/spiffer-generate-cert.sh
+    else
+      echo "Certificate generation script not found or not executable" >&2
+      exit 1
     fi
+
+    # Validate generated files
+    test -f /etc/spiffer/certs/server.key
+    test -f /etc/spiffer/certs/server.crt
+
+    # Fix TLS permissions for service user
+    chown root:spiffer /etc/spiffer/certs/server.key /etc/spiffer/certs/server.crt
+    chmod 0640 /etc/spiffer/certs/server.key
+    chmod 0644 /etc/spiffer/certs/server.crt
 
     echo
     echo "sPIffer installation completed."
