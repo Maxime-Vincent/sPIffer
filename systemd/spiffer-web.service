@@ -18,6 +18,7 @@ ExecStart=/usr/bin/node /usr/lib/spiffer/src/server.js
 Restart=on-failure
 RestartSec=5
 Environment=NODE_ENV=production
+Environment=SPIFFER_WEB_GROUP=spiffer-web
 
 StateDirectory=spiffer
 LogsDirectory=spiffer

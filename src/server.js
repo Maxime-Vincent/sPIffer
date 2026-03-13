@@ -234,23 +234,38 @@ app.get('/api/v1/health', async (req, res) => {
 
 // Auth
 app.post('/api/v1/auth/login', (req, res) => {
-  const { username, password } = req.body;
+  const username = String(req.body.username || '').trim();
+  const password = String(req.body.password || '');
 
   if (!username || !password) {
     return jsonError(res, 400, 'Missing username or password');
   }
 
-  pam.authenticate(username, password, (err) => {
-    if (err) {
-      console.warn('Authentication failed:', err);
-      return jsonError(res, 401, 'Authentication failed');
+  pam.authenticate(
+    username,
+    password,
+    (err) => {
+      if (err) {
+        console.warn('PAM authentication failed', {
+          username,
+          message: err.message,
+          code: err.code,
+        });
+
+        return jsonError(res, 401, 'Authentication failed');
+      }
+
+      const payload = { username };
+      const token = jwt.sign(payload, SECRET_KEY, {
+        expiresIn: JWT_EXPIRES_IN,
+      });
+
+      return jsonSuccess(res, 'Login successful', { token });
+    },
+    {
+      serviceName: 'spiffer-web',
     }
-
-    const payload = { username };
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: JWT_EXPIRES_IN });
-
-    return jsonSuccess(res, 'Login successful', { token });
-  });
+  );
 });
 
 app.post('/api/v1/auth/logout', verifyToken, (req, res) => {

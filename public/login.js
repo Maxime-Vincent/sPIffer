@@ -2,7 +2,8 @@ document.getElementById('loginForm').addEventListener('submit', async function (
     event.preventDefault();
 
     const errorMessage = document.getElementById('errorMessage');
-    errorMessage.style.display = 'none';
+
+    errorMessage.classList.add('hidden');
     errorMessage.textContent = '';
 
     const data = {
@@ -22,7 +23,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         const result = await response.json();
 
         if (!response.ok || !result.success) {
-            errorMessage.style.display = 'block';
+            errorMessage.classList.remove('hidden');
             errorMessage.textContent = result.error || 'Authentication failed';
             return;
         }
@@ -31,7 +32,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
         sessionStorage.setItem('token', token);
         window.location.href = '/dashboard';
     } catch (error) {
-        errorMessage.style.display = 'block';
+        errorMessage.classList.remove('hidden');
         errorMessage.textContent = 'Connection error to server';
     }
 });

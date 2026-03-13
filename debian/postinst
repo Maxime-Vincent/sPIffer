@@ -5,7 +5,7 @@ log() {
   echo "# $*"
 }
 
-case "$1" in
+case "${1:-}" in
   configure)
     log "Running post-installation steps for sPIffer"
 
@@ -22,9 +22,48 @@ case "$1" in
       log "System user 'spiffer' already exists"
     fi
 
-    log "Ensuring certificate directory exists"
+    log "Creating web access group if needed"
+    if ! getent group spiffer-web >/dev/null 2>&1; then
+      groupadd --system spiffer-web
+      log "System group 'spiffer-web' created"
+    else
+      log "System group 'spiffer-web' already exists"
+    fi
+
+    log "Creating dedicated web admin user if needed"
+    if ! getent passwd spiffer-admin >/dev/null 2>&1; then
+      useradd \
+        --create-home \
+        --shell /bin/bash \
+        --user-group \
+        -c "sPIffer web administrator" \
+        spiffer-admin
+      passwd -d spiffer-admin >/dev/null 2>&1 || true
+      chage -d 0 spiffer-admin >/dev/null 2>&1 || true
+      log "User 'spiffer-admin' created"
+    else
+      log "User 'spiffer-admin' already exists"
+    fi
+
+    log "Ensuring 'spiffer-admin' belongs to 'spiffer-web'"
+    usermod -a -G spiffer-web spiffer-admin
+    log "User 'spiffer-admin' added to 'spiffer-web'"
+
+    log "Ensuring application directories exist"
     install -d -m 0750 -o root -g spiffer /etc/spiffer
     install -d -m 0750 -o root -g spiffer /etc/spiffer/certs
+    install -d -m 0750 -o spiffer -g spiffer /var/lib/spiffer
+    install -d -m 0750 -o spiffer -g spiffer /var/lib/spiffer/captures
+
+    log "Installing PAM service file"
+    cat > /etc/pam.d/spiffer-web <<'EOF'
+auth       include   common-auth
+account    include   common-account
+password   include   common-password
+session    include   common-session
+EOF
+    chmod 0644 /etc/pam.d/spiffer-web
+    log "PAM service '/etc/pam.d/spiffer-web' installed"
 
     log "Generating HTTPS certificate if needed"
     if [ -x /usr/lib/spiffer/scripts/spiffer-generate-cert.sh ]; then
@@ -34,6 +73,33 @@ case "$1" in
       log "Certificate generation script not found or not executable"
       exit 1
     fi
+
+    log "Fixing certificate permissions"
+    if [ -f /etc/spiffer/certs/server.key ]; then
+      chown root:spiffer /etc/spiffer/certs/server.key
+      chmod 0640 /etc/spiffer/certs/server.key
+      log "Applied permissions on server.key"
+    fi
+
+    if [ -f /etc/spiffer/certs/server.crt ]; then
+      chown root:spiffer /etc/spiffer/certs/server.crt
+      chmod 0644 /etc/spiffer/certs/server.crt
+      log "Applied permissions on server.crt"
+    fi
+
+    log "Reloading systemd and enabling services if available"
+    if command -v systemctl >/dev/null 2>&1; then
+      systemctl daemon-reload || true
+      systemctl enable spiffer-web.service || true
+      systemctl restart spiffer-web.service || true
+      log "systemd reload/enable/restart completed"
+    else
+      log "systemctl not available, skipping service management"
+    fi
+
+    log "sPIffer installation completed"
+    log "Dedicated web login user: spiffer-admin"
+    log "Set its password with: sudo passwd spiffer-admin"
     ;;
 esac
 

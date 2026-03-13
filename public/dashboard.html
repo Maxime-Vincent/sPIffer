@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sPIffer - Dashboard</title>
     <link rel="stylesheet" href="dashboard.css">
@@ -67,14 +67,14 @@
             <button id="submit-btn" type="button">Launch Capture</button>
         </div>
 
-        <div id="browse-content" class="tab-content" style="display: none;">
+        <div id="browse-content" class="tab-content hidden">
             <h2>Browse Files</h2>
             <div id="folder"></div>
-            <p id="no_file" style="display: none;">No capture file retrieved.</p>
+            <p id="no_file" class="hidden">No capture file retrieved.</p>
         </div>
     </div>
 
-    <p id="output" style="display: none;" aria-live="polite"></p>
+    <p id="output" class="hidden" aria-live="polite"></p>
 
     <footer>
         <p>© 2024 sPIffer - All rights reserved.</p>

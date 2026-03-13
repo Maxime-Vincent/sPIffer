@@ -2,6 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const tabs = document.querySelectorAll('.tab-link');
     const captureContent = document.getElementById('capture-content');
     const browseContent = document.getElementById('browse-content');
+    const outputElement = document.getElementById('output');
+    const nofile = document.getElementById('no_file');
+    const fileList = document.getElementById('folder');
+    const submitButton = document.getElementById('submit-btn');
     const token = sessionStorage.getItem('token');
 
     if (!token) {
@@ -9,17 +13,31 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    function showElement(element) {
+        element.classList.remove('hidden');
+    }
+
+    function hideElement(element) {
+        element.classList.add('hidden');
+    }
+
     function showMessage(message, isError = false) {
-        const outputElement = document.getElementById('output');
-        outputElement.style.display = 'block';
-        outputElement.style.color = isError ? 'red' : 'black';
-        outputElement.innerText = message;
+        outputElement.textContent = message;
+        outputElement.classList.remove('message-error', 'message-success');
+        outputElement.classList.add(isError ? 'message-error' : 'message-success');
+        showElement(outputElement);
     }
 
     function hideMessage() {
-        const outputElement = document.getElementById('output');
-        outputElement.style.display = 'none';
-        outputElement.innerText = '';
+        outputElement.textContent = '';
+        outputElement.classList.remove('message-error', 'message-success');
+        hideElement(outputElement);
+    }
+
+    function setCaptureButtonBusy(isBusy) {
+        submitButton.disabled = isBusy;
+        submitButton.classList.toggle('is-disabled', isBusy);
+        submitButton.textContent = isBusy ? 'Capture in progress...' : 'Launch Capture';
     }
 
     async function apiFetch(url, options = {}) {
@@ -42,11 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function refreshCaptureList() {
         hideMessage();
-
-        const nofile = document.getElementById('no_file');
-        const fileList = document.getElementById('folder');
-
-        nofile.style.display = 'none';
+        hideElement(nofile);
         fileList.innerHTML = '';
 
         try {
@@ -60,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const files = Array.isArray(result.data.files) ? result.data.files : [];
 
             if (files.length === 0) {
-                nofile.style.display = 'block';
+                showElement(nofile);
                 fileList.appendChild(nofile);
                 return;
             }
@@ -86,14 +100,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 fileList.appendChild(fileDiv);
             });
         } catch (error) {
-            nofile.style.display = 'block';
+            showElement(nofile);
             fileList.appendChild(nofile);
             showMessage(error.message || String(error), true);
         }
     }
 
     async function launchCapture() {
-        const button = document.getElementById('submit-btn');
         const data = {
             filename: document.getElementById('filename').value.trim(),
             format: document.getElementById('format').value,
@@ -101,10 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             unit_delay: document.getElementById('delay_format').value
         };
 
-        button.disabled = true;
-        button.style.opacity = '0.5';
-        button.style.cursor = 'not-allowed';
-        button.innerText = 'Capture in progress...';
+        setCaptureButtonBusy(true);
         hideMessage();
 
         try {
@@ -126,10 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             showMessage(error.message || String(error), true);
         } finally {
-            button.disabled = false;
-            button.style.opacity = '1';
-            button.style.cursor = 'pointer';
-            button.innerText = 'Launch Capture';
+            setCaptureButtonBusy(false);
         }
     }
 
@@ -178,12 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const activeTab = document.querySelector('.tab-link.active').dataset.tab;
 
         if (activeTab === 'capture') {
-            captureContent.style.display = 'block';
-            browseContent.style.display = 'none';
+            showElement(captureContent);
+            hideElement(browseContent);
         } else if (activeTab === 'browse') {
+            hideElement(captureContent);
+            showElement(browseContent);
             refreshCaptureList();
-            captureContent.style.display = 'none';
-            browseContent.style.display = 'block';
         }
     }
 

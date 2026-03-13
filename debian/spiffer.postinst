@@ -1,0 +1,74 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+  configure)
+    # Service group
+    if ! getent group spiffer >/dev/null 2>&1; then
+      addgroup --system spiffer
+    fi
+
+    # Service user
+    if ! id -u spiffer >/dev/null 2>&1; then
+      adduser \
+        --system \
+        --ingroup spiffer \
+        --home /var/lib/spiffer \
+        --no-create-home \
+        --shell /usr/sbin/nologin \
+        --gecos "sPIffer service account" \
+        spiffer
+    fi
+
+    # Web admin group
+    if ! getent group spiffer-web >/dev/null 2>&1; then
+      addgroup --system spiffer-web
+    fi
+
+    # Dedicated web login user
+    if ! id -u spiffer-admin >/dev/null 2>&1; then
+      adduser \
+        --disabled-password \
+        --gecos "sPIffer web administrator" \
+        spiffer-admin
+    fi
+
+    # Ensure web admin belongs to the allowed web group
+    adduser spiffer-admin spiffer-web >/dev/null 2>&1 || true
+
+    # Runtime directories
+    install -d -o spiffer -g spiffer -m 0750 /var/lib/spiffer
+    install -d -o spiffer -g spiffer -m 0750 /var/lib/spiffer/captures
+    install -d -o root -g root -m 0755 /etc/spiffer
+    install -d -o root -g root -m 0755 /etc/spiffer/certs
+
+    # PAM service for web authentication
+    if [ ! -f /etc/pam.d/spiffer-web ]; then
+      cat > /etc/pam.d/spiffer-web <<'EOF'
+auth       include   common-auth
+account    include   common-account
+password   include   common-password
+session    include   common-session
+EOF
+      chmod 0644 /etc/pam.d/spiffer-web
+    fi
+
+    # systemd reload
+    if command -v systemctl >/dev/null 2>&1; then
+      systemctl daemon-reload >/dev/null 2>&1 || true
+      systemctl enable spiffer-web.service >/dev/null 2>&1 || true
+      systemctl restart spiffer-web.service >/dev/null 2>&1 || true
+    fi
+
+    echo
+    echo "sPIffer installation completed."
+    echo "Dedicated web login user created: spiffer-admin"
+    echo "Set its password with:"
+    echo "  sudo passwd spiffer-admin"
+    echo
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0
