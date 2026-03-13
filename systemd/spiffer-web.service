@@ -6,8 +6,6 @@ Requires=spiffer-iface-config.service
 
 [Service]
 Type=simple
-User=spiffer
-Group=spiffer
 WorkingDirectory=/usr/lib/spiffer
 
 ExecStartPre=/bin/bash -c 'test -r /etc/spiffer/certs/server.key || { echo "Missing TLS private key"; exit 1; }'
@@ -24,9 +22,8 @@ StateDirectory=spiffer
 LogsDirectory=spiffer
 RuntimeDirectory=spiffer
 
-AmbientCapabilities=CAP_NET_BIND_SERVICE
-CapabilityBoundingSet=CAP_NET_BIND_SERVICE
-NoNewPrivileges=true
+AmbientCapabilities=CAP_NET_BIND_SERVICE CAP_NET_RAW CAP_NET_ADMIN
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE CAP_NET_RAW CAP_NET_ADMIN
 
 StandardOutput=journal
 StandardError=journal
